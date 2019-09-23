@@ -11,6 +11,8 @@
     "rimraf": "^3.0.0"
   },
   "scripts":{
-      "package-functions": "babel 'functionsES6' --out-dir 'functions' --presets=es2015 --copy-files --ignore 'node_modules'"
+      "package-functions": "babel 'functionsES6' --out-dir 'functions' --presets=es2015 --copy-files --ignore 'node_modules'",
+      "test": "RUN_LOCALLY=1 firebase serve",
+      "deploy": "firebase deploy --only functions"
   }
 }
