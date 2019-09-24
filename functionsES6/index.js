@@ -5,7 +5,6 @@ import * as functions from 'firebase-functions';
 //
 import admin from 'firebase-admin';
 import bodyParser from 'body-parser';
-import createError from 'http-errors';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -16,33 +15,30 @@ import router from './router';
 admin.initializeApp();
 const app = express();
 
+const functionConfig = () => {
+	if (process.env.RUN_LOCALLY) {
+		const fs = require('fs');
+		return JSON.parse(fs.readFileSync('.env.json'));
+	} else {
+		return functions.config();
+	}
+};
+
+console.log(functionConfig());
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 dotenv.config({
 	path: path.join(__dirname, `/.env'}`),
 });
 
+console.log(process.env.DB_PORT);
+
 // Add middleware to authenticate requests
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(route.edit, router);
+app.use(router);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-	next(createError(404));
-});
-
-// error handler
-app.use((err, req, res, next) => {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
-
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
-});
 // Expose Express API as a single Cloud Function:
 exports.webHook = functions.region('asia-northeast1').https.onRequest(app);
