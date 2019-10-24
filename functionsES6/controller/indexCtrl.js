@@ -36,7 +36,7 @@ class Controller {
 
 				if (result.rowCount > 0) {
 					const response = await axios.post(
-						'https://hooks.slack.com/services/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',
+						'https://hooks.slack.com/services/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',
 						{ text: `${boardnum} 글 번호가 ${show} 글상태로 수정됨` }
 					);
 				} else {
