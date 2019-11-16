@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var EDIT_FLAG = '/edit/:boardnum/:flag';
 var SLACK_EDIT_FLAG = '/edit';
+var FIND = '/find';
 
 var routes = {
 	// update: (id, flag) => {
@@ -15,7 +16,8 @@ var routes = {
 	// 		return EDIT_FLAG;
 	// 	}
 	// },
-	update: SLACK_EDIT_FLAG
+	update: SLACK_EDIT_FLAG,
+	find: FIND
 };
 
 exports.default = routes;

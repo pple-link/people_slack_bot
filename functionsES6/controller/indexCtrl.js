@@ -1,6 +1,7 @@
 import { select, update } from '../db/query';
 import axios from 'axios';
 import * as functions from 'firebase-functions';
+import { deaes } from '../util/crypto';
 
 class Controller {
 	async update(req, res) {
@@ -36,7 +37,7 @@ class Controller {
 
 				if (result.rowCount > 0) {
 					const response = await axios.post(
-						'https://hooks.slack.com/services/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',
+						'https://hooks.slack.com/services/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',
 						{ text: `${boardnum} 글 번호가 ${show} 글상태로 수정됨` }
 					);
 				} else {
@@ -46,6 +47,37 @@ class Controller {
 			res.json({
 				respons_type: 'in_channel',
 				text: `성공적으로 ${boardnum} 게시글이 ${show} 상태로 수정되었습니다.`,
+			});
+		} catch (err) {
+			console.log(err);
+			res.json({ status: 'error', err: err });
+		}
+	}
+	async find(req, res) {
+		try {
+			const functionConfig = () => functions.config();
+			if (req.body.token != functionConfig().env['token']) {
+				throw new Error('허가되지 않은 토큰');
+			}
+			const boardnum = req.body.text;
+			// select nickname from member where id = (selecgt author from board where boardnum = $boardnum)
+			const result = await select(
+				'nickname, phone, email',
+				'member',
+				`usernum = (select author from board where boardnum = '${boardnum}')`
+			);
+			const nickname = deaes(result.rows[0].nickname);
+			const phone = deaes(result.rows[0].phone);
+			const email = deaes(result.rows[0].email);
+
+			const response = await axios.post(
+				'https://hooks.slack.com/services/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',
+				{ text: `닉네임 : ${nickname} \n phone: ${phone} \n email : ${email}` }
+			);
+
+			res.json({
+				respons_type: 'in_channel',
+				text: `닉네임 : ${nickname} \n phone: ${phone} \n email : ${email}`,
 			});
 		} catch (err) {
 			console.log(err);

@@ -13,9 +13,9 @@ var _pg = require('pg');
 
 var _pg2 = _interopRequireDefault(_pg);
 
-var _fs = require('fs');
+var _fs2 = require('fs');
 
-var _fs2 = _interopRequireDefault(_fs);
+var _fs3 = _interopRequireDefault(_fs2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,17 +31,19 @@ var Singleton = exports.Singleton = function Singleton() {
 	if (instance) return instance;
 	var functionConfig = function functionConfig() {
 		if (process.env.RUN_LOCALLY) {
-			return JSON.parse(_fs2.default.readFileSync('.env.json'));
+			var _fs = require('fs');
+			return JSON.parse(_fs.readFileSync('.env.json'));
 		} else {
 			return functions.config();
 		}
 	};
+
 	instance = new _pg2.default.Pool({
-		host: functionConfig().env['db_host'],
-		user: functionConfig().env['db_user'],
-		password: functionConfig().env['db_pw'],
-		database: functionConfig().env['database'],
-		port: functionConfig().env['db_port']
+		host: functionConfig().env['DB_HOST'],
+		user: functionConfig().env['DB_USER'],
+		password: functionConfig().env['DB_PW'],
+		database: functionConfig().env['DATABASE'],
+		port: functionConfig().env['DB_PORT']
 	});
 	return instance;
 };

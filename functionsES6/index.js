@@ -24,14 +24,8 @@ const functionConfig = () => {
 	}
 };
 
-console.log(functionConfig());
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
-dotenv.config({
-	path: path.join(__dirname, `/.env'}`),
-});
-
-console.log(process.env.DB_PORT);
 
 // Add middleware to authenticate requests
 app.use(express.json());

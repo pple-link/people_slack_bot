@@ -12,6 +12,8 @@ var _firebaseFunctions = require('firebase-functions');
 
 var functions = _interopRequireWildcard(_firebaseFunctions);
 
+var _crypto = require('../util/crypto');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -54,7 +56,7 @@ var Controller = function () {
 					console.log(_result);
 
 					if (_result.rowCount > 0) {
-						var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: boardnum + ' \uAE00 \uBC88\uD638\uAC00 ' + show + ' \uAE00\uC0C1\uD0DC\uB85C \uC218\uC815\uB428' });
+						var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: boardnum + ' \uAE00 \uBC88\uD638\uAC00 ' + show + ' \uAE00\uC0C1\uD0DC\uB85C \uC218\uC815\uB428' });
 					} else {
 						console.log('row count 0');
 					}
@@ -62,6 +64,34 @@ var Controller = function () {
 				res.json({
 					respons_type: 'in_channel',
 					text: '\uC131\uACF5\uC801\uC73C\uB85C ' + boardnum + ' \uAC8C\uC2DC\uAE00\uC774 ' + show + ' \uC0C1\uD0DC\uB85C \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.'
+				});
+			} catch (err) {
+				console.log(err);
+				res.json({ status: 'error', err: err });
+			}
+		}
+	}, {
+		key: 'find',
+		value: async function find(req, res) {
+			try {
+				var functionConfig = function functionConfig() {
+					return functions.config();
+				};
+				if (req.body.token != functionConfig().env['token']) {
+					throw new Error('허가되지 않은 토큰');
+				}
+				var boardnum = req.body.text;
+				// select nickname from member where id = (selecgt author from board where boardnum = $boardnum)
+				var result = await (0, _query.select)('nickname, phone, email', 'member', 'usernum = (select author from board where boardnum = \'' + boardnum + '\')');
+				var nickname = (0, _crypto.deaes)(result.rows[0].nickname);
+				var phone = (0, _crypto.deaes)(result.rows[0].phone);
+				var email = (0, _crypto.deaes)(result.rows[0].email);
+
+				var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: '\uB2C9\uB124\uC784 : ' + nickname + ' \n phone: ' + phone + ' \n email : ' + email });
+
+				res.json({
+					respons_type: 'in_channel',
+					text: '\uB2C9\uB124\uC784 : ' + nickname + ' \n phone: ' + phone + ' \n email : ' + email
 				});
 			} catch (err) {
 				console.log(err);
