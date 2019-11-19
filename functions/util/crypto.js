@@ -11,7 +11,7 @@ var _crypto2 = _interopRequireDefault(_crypto);
 
 var _firebaseFunctions = require('firebase-functions');
 
-var funtions = _interopRequireWildcard(_firebaseFunctions);
+var functions = _interopRequireWildcard(_firebaseFunctions);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -33,7 +33,7 @@ var aes = exports.aes = function aes(input) {
 };
 
 var deaes = exports.deaes = function deaes(input) {
-	var decipher = _crypto2.default.createDecipher('aes-256-cbc', functionConfig().env['CRYPTO_SECRETKEY']);
+	var decipher = _crypto2.default.createDecipher('aes-256-cbc', functionConfig().env['crypto_secretkey']);
 	var d_input = decipher.update(input, 'base64', 'utf8');
 	d_input += decipher.final('utf8');
 	return d_input;

@@ -47,12 +47,7 @@ _firebaseAdmin2.default.initializeApp();
 var app = (0, _express2.default)();
 
 var functionConfig = function functionConfig() {
-	if (process.env.RUN_LOCALLY) {
-		var fs = require('fs');
-		return JSON.parse(fs.readFileSync('.env.json'));
-	} else {
-		return functions.config();
-	}
+	return functions.config();
 };
 
 // Automatically allow cross-origin requests

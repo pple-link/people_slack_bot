@@ -56,7 +56,7 @@ var Controller = function () {
 					console.log(_result);
 
 					if (_result.rowCount > 0) {
-						var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: boardnum + ' \uAE00 \uBC88\uD638\uAC00 ' + show + ' \uAE00\uC0C1\uD0DC\uB85C \uC218\uC815\uB428' });
+						var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: boardnum + ' \uAE00 \uBC88\uD638\uAC00 ' + show + ' \uAE00\uC0C1\uD0DC\uB85C \uC218\uC815\uB428' });
 					} else {
 						console.log('row count 0');
 					}
@@ -80,14 +80,25 @@ var Controller = function () {
 				if (req.body.token != functionConfig().env['token']) {
 					throw new Error('허가되지 않은 토큰');
 				}
-				var boardnum = req.body.text;
+				var data = req.body.text.split(' ');
+				var boardnum = void 0,
+				    nickname = void 0,
+				    query = void 0;
+				if (data.length == 2) {
+					nickname = data[1];
+					query = 'nickname=' + nickname;
+				} else {
+					boardnum = data[0];
+					query = 'usernum = (select author from board where boardnum = \'' + boardnum + '\')';
+				}
+
 				// select nickname from member where id = (selecgt author from board where boardnum = $boardnum)
-				var result = await (0, _query.select)('nickname, phone, email', 'member', 'usernum = (select author from board where boardnum = \'' + boardnum + '\')');
-				var nickname = (0, _crypto.deaes)(result.rows[0].nickname);
+				var result = await (0, _query.select)('nickname, phone, email', 'member', query);
+				nickname = (0, _crypto.deaes)(result.rows[0].nickname);
 				var phone = (0, _crypto.deaes)(result.rows[0].phone);
 				var email = (0, _crypto.deaes)(result.rows[0].email);
 
-				var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: '\uB2C9\uB124\uC784 : ' + nickname + ' \n phone: ' + phone + ' \n email : ' + email });
+				var response = await _axios2.default.post('https://hooks.slack.com/services/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', { text: '\uB2C9\uB124\uC784 : ' + nickname + ' \n phone: ' + phone + ' \n email : ' + email });
 
 				res.json({
 					respons_type: 'in_channel',
