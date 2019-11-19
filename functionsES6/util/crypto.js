@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import * as funtions from 'firebase-functions';
+import * as functions from 'firebase-functions';
 const functionConfig = () => {
 	if (process.env.RUN_LOCALLY) {
 		const fs = require('fs');
@@ -16,7 +16,7 @@ export const aes = (input) => {
 };
 
 export const deaes = (input) => {
-	const decipher = crypto.createDecipher('aes-256-cbc', functionConfig().env['CRYPTO_SECRETKEY']);
+	const decipher = crypto.createDecipher('aes-256-cbc', functionConfig().env['crypto_secretkey']);
 	let d_input = decipher.update(input, 'base64', 'utf8');
 	d_input += decipher.final('utf8');
 	return d_input;

@@ -37,7 +37,7 @@ class Controller {
 
 				if (result.rowCount > 0) {
 					const response = await axios.post(
-						'https://hooks.slack.com/services/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',
+						'https://hooks.slack.com/services/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',
 						{ text: `${boardnum} 글 번호가 ${show} 글상태로 수정됨` }
 					);
 				} else {
@@ -59,19 +59,24 @@ class Controller {
 			if (req.body.token != functionConfig().env['token']) {
 				throw new Error('허가되지 않은 토큰');
 			}
-			const boardnum = req.body.text;
+			const data = req.body.text.split(' ');
+			let boardnum, nickname, query;
+			if (data.length == 2) {
+				nickname = data[1];
+				query = `nickname=${nickname}`;
+			} else {
+				boardnum = data[0];
+				query = `usernum = (select author from board where boardnum = '${boardnum}')`;
+			}
+
 			// select nickname from member where id = (selecgt author from board where boardnum = $boardnum)
-			const result = await select(
-				'nickname, phone, email',
-				'member',
-				`usernum = (select author from board where boardnum = '${boardnum}')`
-			);
-			const nickname = deaes(result.rows[0].nickname);
+			const result = await select('nickname, phone, email', 'member', query);
+			nickname = deaes(result.rows[0].nickname);
 			const phone = deaes(result.rows[0].phone);
 			const email = deaes(result.rows[0].email);
 
 			const response = await axios.post(
-				'https://hooks.slack.com/services/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',
+				'https://hooks.slack.com/services/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',
 				{ text: `닉네임 : ${nickname} \n phone: ${phone} \n email : ${email}` }
 			);
 
