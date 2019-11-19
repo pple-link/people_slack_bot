@@ -26,7 +26,7 @@ var functionConfig = function functionConfig() {
 	}
 };
 var aes = exports.aes = function aes(input) {
-	var cipher = _crypto2.default.createCipher('aes-256-cbc', process.env.CRYPTO_SECRETKEY);
+	var cipher = _crypto2.default.createCipher('aes-256-cbc', functionConfig().env['crypto_secretkey']);
 	var c_input = cipher.update(input, 'utf8', 'base64');
 	c_input += cipher.final('base64');
 	return c_input;

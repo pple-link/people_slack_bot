@@ -9,7 +9,7 @@ const functionConfig = () => {
 	}
 };
 export const aes = (input) => {
-	const cipher = crypto.createCipher('aes-256-cbc', process.env.CRYPTO_SECRETKEY);
+	const cipher = crypto.createCipher('aes-256-cbc', functionConfig().env['crypto_secretkey']);
 	let c_input = cipher.update(input, 'utf8', 'base64');
 	c_input += cipher.final('base64');
 	return c_input;

@@ -85,8 +85,9 @@ var Controller = function () {
 				    nickname = void 0,
 				    query = void 0;
 				if (data.length == 2) {
-					nickname = data[1];
-					query = 'nickname=' + nickname;
+					nickname = (0, _crypto.aes)(data[1]);
+
+					query = 'nickname=\'' + nickname + '\'';
 				} else {
 					boardnum = data[0];
 					query = 'usernum = (select author from board where boardnum = \'' + boardnum + '\')';

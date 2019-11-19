@@ -1,7 +1,7 @@
 import { select, update } from '../db/query';
 import axios from 'axios';
 import * as functions from 'firebase-functions';
-import { deaes } from '../util/crypto';
+import { aes, deaes } from '../util/crypto';
 
 class Controller {
 	async update(req, res) {
@@ -62,8 +62,9 @@ class Controller {
 			const data = req.body.text.split(' ');
 			let boardnum, nickname, query;
 			if (data.length == 2) {
-				nickname = data[1];
-				query = `nickname=${nickname}`;
+				nickname = aes(data[1]);
+
+				query = `nickname='${nickname}'`;
 			} else {
 				boardnum = data[0];
 				query = `usernum = (select author from board where boardnum = '${boardnum}')`;
